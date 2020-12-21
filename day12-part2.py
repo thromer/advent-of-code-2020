@@ -6,40 +6,38 @@ import sys
 class Boat:
 
   def __init__(self):
-    self.dx = 1
-    self.dy = 0
+    self.dx = 10
+    self.dy = -1
     self.x = 0
     self.y = 0
     self.commands = {'N': self.n, 'S': self.s, 'E': self.e, 'W': self.w,
                      'L': self.l, 'R': self.r, 'F':self.f}
 
   def n(self, arg):
-    self.y -= arg
+    self.dy -= arg
 
   def s(self, arg):
-    self.y += arg
+    self.dy += arg
 
   def e(self, arg):
-    self.x += arg
+    self.dx += arg
 
   def w(self, arg):
-    self.x -= arg
+    self.dx -= arg
 
   def r(self, arg):
     if arg < 0 or arg % 90 != 0:
       raise ValueError('bad l arg %d' % arg)
     i = 0
-    # E 1,0 -> 0,1
-    # S 0,1 -> -1,0
-    # W -1,0 -> 0,-1
-    # N 0,-1 -> 1,0
+    # ENE 2,-1 -> 1,2
+    # SSE 1,2 -> -2,1
+    # WSW -2,1 -> -1,-2
+    # NNW  -1,-2 -> 2,-1
     while i < int(arg/90):
-      if abs(self.dx) > 0:
-        self.dy = self.dx
-        self.dx = 0
-      else:
-        self.dx = -self.dy
-        self.dy = 0
+      old_dx = self.dx
+      old_dy = self.dy
+      self.dx = abs(old_dy) * (-int(old_dy/abs(old_dy))) if old_dy != 0 else 0
+      self.dy = abs(old_dx) * int(old_dx/abs(old_dx)) if old_dx != 0 else 0
       # print(self.display())
       i += 1
 
@@ -62,7 +60,8 @@ def main():
     b = Boat()
     for line in sys.stdin:
         print(b.display())
-        print(line)
+        print()
+        print(line.rstrip())
         b.command(line.rstrip())
     print(b.display())
     print('x',b.x,'y',b.y,'dist',abs(b.x)+abs(b.y))
