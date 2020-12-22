@@ -32,7 +32,7 @@ def main():
         address, word = re.match(r'^mem\[([0-9]+)\] = ([0-9]+)$', line.rstrip()).groups()
         m.store(int(address), int(word))
     
-    print(m.memory)
+    # print(m.memory)
     print(sum(m.memory.values()))
 
 if __name__ == "__main__":
