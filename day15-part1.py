@@ -14,13 +14,13 @@ def main():
     i = 1
     for last in starting:
       data[last] = i, 0
-      print(i, last)
+      # print(i, last)
       i += 1
-    while i <= 2020:
+    while i <= 30000000: # 2020:
       recent, age = data[last]
-      print('recent age', recent, age)
+      # print('recent age', recent, age)
       last = 0 if age == 0 else age
-      print(i, last)
+      # print(i, last)
       data[last] = i, i - data[last][0] if last in data else 0
       i += 1
     print(last)
