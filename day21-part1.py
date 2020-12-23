@@ -25,6 +25,7 @@ def main():
   print(f'all allergens {all_allergens}')
 
   non_allergenic_ingredients = all_ingredients.copy()
+  allergenic_ingredient_candidates = defaultdict(set)
   for allergen in allergen_ingredient_sets.keys():
     candidate_ingredients = all_ingredients.copy()
     #print(f'{allergen} is in one of {candidate_ingredients}')
@@ -33,6 +34,7 @@ def main():
       candidate_ingredients &= ingredient_set
       #print(f'{allergen} is in one of {candidate_ingredients}')
     print(f'{allergen} is in one of {candidate_ingredients}')
+    allergenic_ingredient_candidates[allergen] = candidate_ingredients
     non_allergenic_ingredients -= candidate_ingredients
   print(f'non allergenic {non_allergenic_ingredients}')
   count = 0
@@ -41,6 +43,19 @@ def main():
       if ingredient in non_allergenic_ingredients:
         count += 1
   print(count)
+  allergenic_ingredients = {}
+  while len(allergenic_ingredients) < len(allergenic_ingredient_candidates):
+    found = set()
+    for allergen, candidate_ingredients in allergenic_ingredient_candidates.items():
+      if len(candidate_ingredients) == 1:
+        ingr = list(candidate_ingredients)[0]
+        found.add(ingr)
+        allergenic_ingredients[allergen] = ingr
+    for candidate_ingredients in allergenic_ingredient_candidates.values():
+      candidate_ingredients -= found
+  for allergen in sorted(all_allergens):
+    print(f'{allergen}: {allergenic_ingredients[allergen]}')
+  print(','.join([allergenic_ingredients[allergen] for allergen in sorted(all_allergens)]))
 
   
     
