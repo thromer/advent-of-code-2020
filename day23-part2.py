@@ -1,4 +1,4 @@
-#!/home/tromer/advent-of-code-2020/venv/bin/python3
+#!./venv/bin/python3
 
 # brute force ... what's the clever way?
 
