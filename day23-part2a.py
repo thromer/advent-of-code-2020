@@ -52,10 +52,14 @@ class AllOfIt:
       entry.next = entry
       entry.prev = entry
     else:
+      # come on! TODO BORKEN
       old_tail = self.tail
-      entry.prev = old_tail
-      entry.next = old_tail.next
+      old_tail_next = self.tail.next
       self.tail = entry
+      entry.next = old_tail_next
+      entry.prev = old_tail
+      old_tail.next = entry
+      entry.next.prev = entry
     self.starts[entry.start] = entry
   def remove_after(self, n, count):
     entry = self.find_entry(n)
@@ -66,11 +70,11 @@ class AllOfIt:
     suffix = None
     removed_count = 0
     if entry.len > prefix_len:
-      remove_len = max(count, entry.len - prefix_len)
+      remove_len = min(count, entry.len - prefix_len)
       removed = [Entry(n + 1, remove_len)]
       removed_count = remove_len
       if entry.len > prefix_len + remove_len:
-        suffix = Entry(n + 1 + remove_len, entry_len - prefix_len - remove_len)
+        suffix = Entry(n + 1 + remove_len, entry.len - prefix_len - remove_len)
       
     else:
       removed = []
@@ -78,6 +82,10 @@ class AllOfIt:
     # but if we're unlucky we'll have to dig into up to 3 successors!!
     if removed_count < count:
       raise ValueError('implement spill')
+
+    print(f'prefix {prefix.display()}')
+    print(f'suffix {suffix.display() if suffix else ""}')
+    print(f'removed {[x.display() for x in removed]}')
     
     # surgery. since we're excising old entry may need new head & tail
     # also need to update starts!
@@ -115,7 +123,6 @@ class AllOfIt:
       result = [self.tail.display()]
       curr = self.tail.prev
       while curr != self.tail:
-        print('curr ', curr.display())
         result.append(curr.display())
         curr = curr.prev   
     return ', '.join(result)
@@ -143,10 +150,7 @@ def main():
   all = AllOfIt()
   cups = [int(x) for x in sys.stdin.readline().strip()]
   for cup in cups:
-    print(f'cup={cup}')
     all.append_entry(Entry(cup, 1))
-    print(f'[{all.display()}]')
-    print(f'r [{all.display(reverse=True)}]')
   all.append_entry(Entry(len(cups)+1,CUPS-len(cups)))
   print(f'[{all.display()}]')
   print(f'r [{all.display(reverse=True)}]')
